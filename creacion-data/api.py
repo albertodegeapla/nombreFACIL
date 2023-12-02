@@ -1,10 +1,7 @@
 import requests
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 # URL de la API proporcionada
-url = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/valenbisi-disponibilitat-valenbisi-dsiponibilidad/records?limit=20"
+url = "https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/valenbisi-disponibilitat-valenbisi-dsiponibilidad/records?limit=100"
 
 try:
     # Realiza la solicitud GET
@@ -16,51 +13,37 @@ try:
     # Procesa la respuesta en formato JSON
     data = response.json()
 
-    # Imprime la respuesta completa para depurar
-    logging.info(f"API Response: {data}")
-
     # Accede a los datos específicos
     total_count = data["total_count"]
-    records = data.get("records", [])
+    results = data.get("results", [])
+
 
     # Si hay al menos un registro
-    if records:
-        record = records[0]
-        
-        # Accede a los detalles específicos de ese registro
-        fields = record.get("fields", {})
-        address = fields.get("address")
-        number = fields.get("number")
-        open_status = fields.get("open")
-        available = fields.get("available")
-        free = fields.get("free")
-        total = fields.get("total")
-        ticket = fields.get("ticket")
-        updated_at = fields.get("updated_at")
-        geo_shape = fields.get("geo_shape", {})
-        geo_point_2d = fields.get("geo_point_2d", {})
+    for result in results:
+        address = result.get("address")
+        number = result.get("number")
+        open_status = result.get("open")
+        available = result.get("available")
+        free = result.get("free")
+        total = result.get("total")
+        ticket = result.get("ticket")
+        updated_at = result.get("updated_at")
+        geo_shape = result.get("geo_shape", {})
+        geo_point_2d = result.get("geo_point_2d", {})
 
-        # Accede a las coordenadas específicas
         lon = geo_point_2d.get("lon")
         lat = geo_point_2d.get("lat")
 
         # Ahora puedes usar estas variables según tus necesidades
-        logging.info(f"Total count: {total_count}")
-        logging.info(f"Address: {address}, Number: {number}")
-        logging.info(f"Open status: {open_status}")
-        logging.info(f"Available: {available}, Free: {free}, Total: {total}")
-        logging.info(f"Ticket: {ticket}")
-        logging.info(f"Updated at: {updated_at}")
-        logging.info(f"Coordinates: Lon: {lon}, Lat: {lat}")
+        print(f"Parada: {number}")
+        print(f"Address: {address}, Number: {number}")
+        print(f"Open status: {open_status}")
+        print(f"Available: {available}, Free: {free}, Total: {total}")
+        print(f"Ticket: {ticket}")
+        print(f"Updated at: {updated_at}")
+        print(f"Coordinates: Lon: {lon}, Lat: {lat}")
+        print("-----------------------------------------")
 
-    else:
-        logging.info("No records found.")
-
-except requests.exceptions.RequestException as e:
-    logging.error(f"Error en la solicitud: {e}")
 finally:
     if 'response' in locals():
         response.close()
-
-
-
