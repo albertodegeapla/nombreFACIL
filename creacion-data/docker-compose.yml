@@ -6,3 +6,21 @@ services:
       context: .
     ports:
       - "8080:80"
+
+  mongodb:
+    image: mongo
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db  # Guardará los datos de MongoDB localmente
+
+  data_processing:
+    build: .
+    volumes:
+      - ./get_valenbisi_data.py:/app/get_valenbisi_data.py
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    command: python get_valenbisi_data.py  # Comando para ejecutar tu script Python
