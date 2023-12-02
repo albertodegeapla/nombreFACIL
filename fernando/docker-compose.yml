@@ -1,0 +1,6 @@
+version: '3'
+services:
+  valenbisi_api:
+    build: .
+    volumes:
+      - ./valenbisi_data:/app
